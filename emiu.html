@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiệp Kỷ Niệm Lãng Mạn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fff0f3 0%, #ffccd5 50%, #ffb3c1 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .font-romantic {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Floating Hearts Background */
+        .heart-bg {
+            position: fixed;
+            top: -10vh;
+            color: rgba(225, 29, 72, 0.25);
+            font-size: 1.5rem;
+            animation: fall 8s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg) scale(1.2);
+                opacity: 0.2;
+            }
+        }
+
+        /* Heart Burst Particles Effect */
+        .burst-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            animation: burst 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes burst {
+            0% {
+                transform: translate(0, 0) scale(0.5) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tw-x), var(--tw-y)) scale(1.5) rotate(var(--tw-r));
+                opacity: 0;
+            }
+        }
+
+        /* Glassmorphism Card Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(225, 29, 72, 0.15);
+        }
+
+        /* Polaroid Photo Hover FX */
+        .polaroid {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: center;
+        }
+
+        .polaroid:hover {
+            transform: translateY(-10px) scale(1.03) rotate(0deg) !important;
+            box-shadow: 0 20px 35px rgba(225, 29, 72, 0.25);
+        }
+
+        /* Vinyl Disk Animation */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin 6s linear infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff0f3;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fda4af;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f43f5e;
+        }
+    </style>
+</head>
+<body class="relative text-gray-800 pb-16">
+
+    <!-- FLOATING HEARTS CONTAINER -->
+    <div id="heartsContainer"></div>
+
+    <!-- AUDIO PLAYER & CONTROLLER -->
+    <!-- Bạn có thể thay đổi đường dẫn file nhạc 'nhac_nen.mp3' trực tiếp tại thẻ source bên dưới -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="sas.mp3" type="audio/mpeg">
+        Trình duyệt của bạn không hỗ trợ phát âm thanh.
+    </audio>
+
+    <!-- Nút Bật/Tắt Âm Thanh Dạng Đĩa Nhạc Xoay -->
+    <button id="musicToggleBtn" onclick="toggleMusic()" class="fixed top-5 right-5 z-40 bg-white/80 backdrop-blur-md border border-rose-300 text-rose-600 p-3 rounded-full shadow-lg hover:scale-110 transition duration-300 flex items-center gap-2 group" title="Bật/Tắt Nhạc Nền">
+        <i id="musicIcon" class="fas fa-disc text-xl text-rose-500"></i>
+        <span id="musicText" class="text-xs font-semibold pr-1 hidden group-hover:inline">Phát Nhạc</span>
+    </button>
+
+    <!---->
+    <!-- TRANG BÌA THIỆP MỜI BAN ĐẦU -->
+    <div id="welcomeScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-rose-100 via-pink-200 to-rose-300 transition-opacity duration-700">
+        <div class="text-center max-w-md w-full glass-card p-8 rounded-3xl border-2 border-rose-300 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-300/30 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-pink-400/30 rounded-full blur-2xl"></div>
+            
+            <div class="w-24 h-24 mx-auto mb-4 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                <i class="fas fa-envelope-open-text text-4xl"></i>
+            </div>
+            
+            <h1 class="font-romantic text-4xl sm:text-5xl font-bold text-rose-600 mb-2">Gửi Tới Msu</h1>
+            <p class="text-rose-700 text-sm sm:text-base font-medium mb-6">Em đang có một thiệp kỷ niệm ngọt ngào đang chờ được mở ra...</p>
+            
+            <button onclick="openEnvelope(event)" class="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+                <i class="fas fa-heart text-xl animate-pulse"></i>
+                <span class="text-lg">Mở Thiệp Ngay</span>
+            </button>
+        </div>
+    </div>
+
+    <!---->
+    <!-- MAIN ALBUM PAGE (HIDDEN INITIALLY) -->
+    <div id="mainContent" class="opacity-0 transition-opacity duration-1000 hidden">
+        <header class="relative z-10 pt-12 pb-6 text-center px-4">
+            <div class="inline-block relative">
+                <span class="absolute -top-6 -left-6 text-rose-500 text-3xl animate-bounce"><i class="fas fa-heart"></i></span>
+                <span class="absolute -bottom-4 -right-6 text-rose-400 text-2xl animate-pulse"><i class="fas fa-heart"></i></span>
+                <h1 class="font-romantic text-5xl md:text-7xl font-bold text-rose-600 drop-shadow-md mb-2">
+                    Hành Trình Yêu Thương
+                </h1>
+            </div>
+            <p class="text-rose-700 text-lg md:text-xl font-medium max-w-xl mx-auto mt-2">
+                "Mỗi khoảnh khắc bên bạn đều là một mảnh ghép ký ức tuyệt vời nhất."
+            </p>
+
+            <div class="mt-4 inline-flex items-center gap-2 bg-rose-100/80 border border-rose-300 px-4 py-1.5 rounded-full text-rose-600 text-sm font-semibold shadow-sm">
+                <i class="fas fa-sparkles text-amber-400"></i>
+                <span>Chúc em 20/10 ngày càng xinh đẹp cute và iu anhh &lt;3</span>
+                <i class="fas fa-sparkles text-amber-400"></i>
+            </div>
+        </header>
+
+        <main class="relative z-10 max-w-6xl mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="galleryGrid">
+                <!-- Các khung ảnh kỷ niệm sẽ tự động render bằng JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!---->
+    <!-- MODAL XEM CHI TIẾT ẢNH (LIGHTBOX) -->
+    <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="relative bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border-4 border-rose-300 transform scale-95 opacity-0 transition-all duration-300" id="modalCard">
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-20 bg-rose-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-rose-600 transition">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <!-- Modal Content -->
+            <div class="p-4 sm:p-6 bg-gradient-to-b from-rose-50 to-white">
+                <div class="relative rounded-2xl overflow-hidden shadow-inner max-h-[60vh] flex items-center justify-center bg-rose-100/50">
+                    <img id="modalImg" src="" alt="Kỷ niệm" class="w-full h-full object-contain max-h-[55vh] rounded-xl">
+                </div>
+                
+                <div class="mt-5 text-center">
+                    <span id="modalDate" class="inline-block px-3 py-1 bg-rose-100 text-rose-600 text-xs font-bold rounded-full mb-2">
+                        <!-- Date badge -->
+                    </span>
+                    <h2 id="modalTitle" class="font-romantic text-3xl font-bold text-rose-600 mb-2">
+                        <!-- Title -->
+                    </h2>
+                    <p id="modalDesc" class="text-gray-600 text-sm md:text-base leading-relaxed px-4">
+                        <!-- Description -->
+                    </p>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="mt-6 flex justify-between items-center px-4 pt-4 border-t border-rose-100">
+                    <button onclick="prevImage()" class="text-rose-500 hover:text-rose-700 font-medium text-sm flex items-center gap-1 bg-rose-50 px-3 py-2 rounded-xl border border-rose-200">
+                        <i class="fas fa-chevron-left"></i> Ảnh trước
+                    </button>
+                    <span class="text-xs text-rose-400 font-semibold" id="modalCounter">1 / 6</span>
+                    <button onclick="nextImage()" class="text-rose-500 hover:text-rose-700 font-medium text-sm flex items-center gap-1 bg-rose-50 px-3 py-2 rounded-xl border border-rose-200">
+                        Ảnh sau <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>  
+            </div>
+        </div>
+    </div>
+
+    <!---->
+    <script>
+        /* =================================================================
+           HƯỚNG DẪN THAY ĐỔI TÊN FILE ẢNH VÀ LỜI CHÚC TRỰC TIẾP BẰNG CODE:
+           Bạn hãy đặt các file PNG cùng thư mục với file index.html này
+           và sửa tên file (ví dụ: 'anh_1.png') bên dưới theo đúng tên file của bạn.
+           ================================================================= */
+        let memories = [
+            {
+                id: 1,
+                url: 'ptb.jpg', // Sửa tên file ảnh tại đây
+                title: 'Lần đầu được đi ptb',
+                date: '23 Tháng 05',
+                description: 'Mình đi xem phim đi... Nhưng thế nào lại xem ở quán ptb'
+            },
+            {
+                id: 2,
+                url: 'mapmo.jpg', // Sửa tên file ảnh tại đây
+                title: 'Lần đầu bị bắt gặp',
+                date: 'Không nhớ bao giờ=))',
+                description: 'Mày ngồi với em nào xinh thế =)) Giờ thì biết là em iu t rồi nhé'
+            },
+            {
+                id: 3,
+                url: '4th10.jpg', // Sửa tên file ảnh tại đây
+                title: 'Ảnh này cuteee',
+                date: '4 tháng 10',
+                description: 'Mê ảnh này nhất mà cổ bảo, cổ thì xinh còn tôi thì là fan cổ...'
+            },
+            {
+                id: 4,
+                url: 'workshop.jpg', // Sửa tên file ảnh tại đây
+                title: 'Ẻm bảo áo này cute',
+                date: '31 Tháng 8',
+                description: 'Lần đầu mặc áo đôi đi chơi, cũng cute cute mặc đi tô tượng. Của anh đẹp hơn, không của em đẹp hơn thế về anh tạo vote... và bị cổ dỗi...'
+            },
+            {
+                id: 5,
+                url: 'giaykhen.jpg', // Sửa tên file ảnh tại đây
+                title: 'Kỷ Niệm Ngọt Ngào',
+                date: '15 Tháng 10',
+                description: '2 đứa mỗi đứa 2 giấy khen ngầu cả đôii'
+            },
+            {
+                id: 6,
+                url: 'hoa.jpg', // Sửa tên file ảnh tại đây
+                title: 'Hứa Hẹn Tương Lai',
+                date: 'Mãi Mãi',
+                description: 'Đương nhiên rồi làm gì có đóa hoa nào đẹp bằng bó Hoa của tôi!!!'
+            }
+        ];
+
+        let currentIndex = 0;
+        let isPlayingMusic = false;
+
+        // Xử lý bật / tắt nhạc nền
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const icon = document.getElementById('musicIcon');
+            const text = document.getElementById('musicText');
+
+            if (isPlayingMusic) {
+                music.pause();
+                icon.classList.remove('animate-spin-slow');
+                text.innerText = "Bật Nhạc";
+                isPlayingMusic = false;
+            } else {
+                music.play().then(() => {
+                    icon.classList.add('animate-spin-slow');
+                    text.innerText = "Tắt Nhạc";
+                    isPlayingMusic = true;
+                }).catch((err) => {
+                    console.log("Cần tương tác của người dùng để phát nhạc:", err);
+                });
+            }
+        }
+
+        // Bắt buộc phát nhạc tự động
+// Bắt buộc phát nhạc tự động
+        function forcePlayMusic() {
+            const music = document.getElementById('bgMusic');
+            const icon = document.getElementById('musicIcon');
+            const text = document.getElementById('musicText');
+
+            music.loop = true; // Đảm bảo nhạc luôn lặp lại vô tận khi hết bài
+            music.volume = 0.2; // <-- Chỉnh độ to nhỏ ở đây (0.1 là rất nhỏ, 0.5 là vừa phải, 1.0 là tối đa)
+            
+            music.play().then(() => {
+                icon.classList.add('animate-spin-slow');
+                text.innerText = "Tắt Nhạc";
+                isPlayingMusic = true;
+            }).catch((e) => {
+                console.log("Phát nhạc tự động bị chặn bởi chính sách trình duyệt, nhạc sẽ bật khi người dùng tương tác.", e);
+            });
+        }
+
+        // Bắn tim khi bấm mở thiệp
+        function createHeartBurst(originX, originY) {
+            const colors = ['#f43f5e', '#e11d48', '#fb7185', '#fda4af', '#fff'];
+            const icons = ['fa-heart', 'fa-heart-pulse'];
+
+            for (let i = 0; i < 40; i++) {
+                const heart = document.createElement('i');
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                heart.className = `fas ${randomIcon} burst-heart`;
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.color = color;
+                heart.style.left = `${originX}px`;
+                heart.style.top = `${originY}px`;
+                heart.style.fontSize = `${Math.random() * 20 + 15}px`;
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 250 + 100;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 100;
+                const tr = (Math.random() - 0.5) * 720;
+
+                heart.style.setProperty('--tw-x', `${tx}px`);
+                heart.style.setProperty('--tw-y', `${ty}px`);
+                heart.style.setProperty('--tw-r', `${tr}deg`);
+
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 1200);
+            }
+        }
+
+        // Hành động mở thiệp
+        function openEnvelope(event) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const clickX = rect.left + rect.width / 2;
+            const clickY = rect.top + rect.height / 2;
+
+            createHeartBurst(clickX, clickY);
+
+            // Bắt đầu tự động phát nhạc ngay khi người dùng chạm/bấm "Mở Thiệp"
+            forcePlayMusic();
+
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const mainContent = document.getElementById('mainContent');
+
+            welcomeScreen.classList.add('opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                welcomeScreen.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                setTimeout(() => {
+                    mainContent.classList.remove('opacity-0');
+                }, 50);
+            }, 700);
+        }
+
+        // Tạo hiệu ứng tim rơi làm nền
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const heartIcons = ['fa-heart', 'fa-heart-pulse', 'fa-hand-holding-heart'];
+            
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('i');
+                const randomIcon = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                heart.className = `fas ${randomIcon} heart-bg`;
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.animationDuration = `${5 + Math.random() * 5}s`;
+                heart.style.animationDelay = `${Math.random() * 5}s`;
+                heart.style.fontSize = `${1 + Math.random() * 1.5}rem`;
+                container.appendChild(heart);
+            }
+        }
+
+        // Render các khung ảnh Polaroid
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            const rotations = ['rotate-1', '-rotate-2', 'rotate-2', '-rotate-1', 'rotate-3', '-rotate-3'];
+
+            memories.forEach((item, index) => {
+                const rotClass = rotations[index % rotations.length];
+                const card = document.createElement('div');
+                card.className = `polaroid cursor-pointer glass-card p-4 rounded-2xl ${rotClass} border-2 border-white transform transition hover:z-20`;
+                card.onclick = () => openModal(index);
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden rounded-xl aspect-square bg-rose-100 flex items-center justify-center">
+                        <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover transition duration-500 hover:scale-110" onerror="this.src='https://placehold.co/600x600/ffe4e6/f43f5e?text=${encodeURIComponent(item.url)}'">
+                        <div class="absolute top-2 right-2 bg-rose-500/80 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-full font-semibold shadow">
+                            <i class="far fa-calendar-alt mr-1"></i>${item.date}
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h3 class="font-romantic text-2xl font-bold text-rose-600 truncate">${item.title}</h3>
+                        <p class="text-xs text-rose-800 line-clamp-2 mt-1 px-1 font-medium">${item.description}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Điều khiển Modal Lightbox
+        function openModal(index) {
+            currentIndex = index;
+            updateModalContent();
+            
+            const modal = document.getElementById('imageModal');
+            const modalCard = document.getElementById('modalCard');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalCard.classList.remove('scale-95', 'opacity-0');
+                modalCard.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            const modalCard = document.getElementById('modalCard');
+            
+            modalCard.classList.remove('scale-100', 'opacity-100');
+            modalCard.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function updateModalContent() {
+            const item = memories[currentIndex];
+            const modalImg = document.getElementById('modalImg');
+            modalImg.src = item.url;
+            modalImg.onerror = function() {
+                this.src = `https://placehold.co/600x600/ffe4e6/f43f5e?text=${encodeURIComponent(item.url)}`;
+            };
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalDate').innerText = item.date;
+            document.getElementById('modalDesc').innerText = item.description;
+            document.getElementById('modalCounter').innerText = `${currentIndex + 1} / ${memories.length}`;
+        }
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + memories.length) % memories.length;
+            updateModalContent();
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % memories.length;
+            updateModalContent();
+        }
+
+        // Đóng modal bằng phím ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Khởi chạy ứng dụng
+        window.onload = function() {
+            createHearts();
+            renderGallery();
+
+            // Thử phát nhạc tự động nếu trình duyệt cho phép
+            document.addEventListener('click', function autoPlayOnFirstClick() {
+                if (!isPlayingMusic) {
+                    forcePlayMusic();
+                }
+            }, { once: true });
+        };
+    </script>
+</body>
+</html>
